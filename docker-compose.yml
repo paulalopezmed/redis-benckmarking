@@ -6,3 +6,8 @@ services:
     ports:
       - "6379:6379"
 
+  redis-benchmark:
+    container_name: redis-benchmark
+    image: docker.io/redis
+    entrypoint: redis-benchmark
+    command: "-h redis -p 6379"
