@@ -1,0 +1,28 @@
+https://hub.docker.com/_/redis
+Alvaro Lopez Medina12:19
+version: '3'
+services:
+  redis:
+    image: docker.io/redis
+    container_name: redis
+    privileged: true
+    ports:
+      - "6379:6379"
+
+  redis-benchmark:
+    image: docker.io/redis
+    container_name: redis-benchmark
+    privileged: true
+    entrypoint: redis-benchmark
+    command: ""
+Alvaro Lopez Medina12:48
+https://github.com/clue/docker-redis-benchmark
+https://hub.docker.com/r/clue/redis-benchmark
+Alvaro Lopez Medina12:54
+https://github.com/joeferner/redis-commander
+Alvaro Lopez Medina13:01
+https://hub.docker.com/r/rediscommander/redis-commander
+Alvaro Lopez Medina14:18
+https://k6.io/blog/benchmarking-redis-with-k6/
+Alvaro Lopez Medina14:19
+https://redis.io/docs/manual/programmability/eval-intro/
