@@ -26,3 +26,8 @@ Alvaro Lopez Medina14:18
 https://k6.io/blog/benchmarking-redis-with-k6/
 Alvaro Lopez Medina14:19
 https://redis.io/docs/manual/programmability/eval-intro/
+
+
+
+Cuando intento ejecutar docker en ubuntu y no lo reconoce
+ wsl.exe --set-default ubuntu

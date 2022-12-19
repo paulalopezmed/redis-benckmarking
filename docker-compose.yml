@@ -6,19 +6,35 @@ services:
     ports:
       - "6379:6379"
 
-  redis-benchmark:
-    container_name: redis-benchmark
-    image: docker.io/redis
-    entrypoint: redis-benchmark
-    command: "-h redis -p 6379"
+
+  # redis-benchmark:
+  #   container_name: redis-benchmark
+  #   image: docker.io/redis
+  #   entrypoint: redis-benchmark
+  #   command: "-h redis -p 6379"
 
   redis-commander:
     container_name: redis-commander
     hostname: redis-commander
     image: docker.io/rediscommander/redis-commander:latest
-    ##build: .
     restart: always
     environment:
       - REDIS_HOSTS=local:redis:6379
+    # Wait until redis is up to run
+    depends_on:
+      - "redis"
     ports:
       - "8080:8081"  
+
+  redis-client:
+    build: .
+    container_name: redis-client
+    image: redis-client
+    environment:
+      - REDIS_URL=redis
+   # Wait until redis is up to run
+    depends_on:
+      - "redis"
+    # ports:
+    #   - "8080:8080"
+
