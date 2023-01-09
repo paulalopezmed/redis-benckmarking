@@ -88,16 +88,31 @@ class RedisUser(User):
     def __init__(self, *args, **kwargs):
         super(RedisUser, self).__init__(*args, **kwargs)
         self.client = RedisClient()
+        print("hola")
+        
 
 
-        # Rendom word generation
+
+        # Random word generation
         length1 = random.randrange(1,20)
         length2 = random.randrange(1,20)
         self.result_str1 = ''.join(random.choice(string.ascii_letters) for i in range(length1))
         self.result_str2 = ''.join(random.choice(string.ascii_letters) for i in range(length2))
 
 
-    @task(1)
+    @events.test_start.add_listener
+    def on_test_start( environment, **kwargs):
+        initClient= RedisClient()
+        print("A new test is starting")
+        print(environment)
+        initClient.set_redis("hello","h")
+        print(initClient.get_redis("hello"))
+
+    def on_start(self):
+        print("hola")
+        
+
+    @task
     def test1 (self):
         for i in range (1,10):
             self.client.set_redis(self.result_str1,self.result_str2)
@@ -106,7 +121,7 @@ class RedisUser(User):
             self.client.get_redis(self.result_str1)
 
     
-    @task(2)
+    @task
     def test3 (self):
         for i in range (1,1000):
             self.client.set_redis(self.result_str1,self.result_str2)
@@ -114,7 +129,7 @@ class RedisUser(User):
         for i in range(1,10):
             self.client.get_redis(self.result_str1)
 
-    @task(3)
+    @task
     def test4 (self):
         for i in range (1,1000):
             self.client.set_redis(self.result_str1,self.result_str2)
@@ -122,7 +137,7 @@ class RedisUser(User):
         for i in range(1,10):
             self.client.hget_redis("RandomWords",self.result_str1)
 
-    @task(4)
+    @task
     def test2 (self):
         for i in range (1,10):
             self.client.hset_redis("RandomWords",self.result_str1,self.result_str2)

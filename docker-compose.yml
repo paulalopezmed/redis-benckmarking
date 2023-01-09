@@ -26,15 +26,15 @@ services:
     ports:
       - "8080:8081"  
 
-  redis-client:
-    build: .
-    container_name: redis-client
-    image: redis-client
-    environment:
-      - REDIS_URL=redis
-   # Wait until redis is up to run
-    depends_on:
-      - "redis"
-    # ports:
-    #   - "8080:8080"
+  # redis-client:
+  #   build: .
+  #   container_name: redis-client
+  #   image: redis-client
+  #   environment:
+  #     - REDIS_URL=redis
+  #  # Wait until redis is up to run
+  #   depends_on:
+  #     - "redis"
+  #   # ports:
+  #   #   - "8080:8080"
 
