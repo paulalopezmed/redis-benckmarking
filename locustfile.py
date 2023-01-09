@@ -27,11 +27,11 @@ class RedisClient(object):
                 result = ''
         except Exception as e:
             total_time = int((time.time() - start_time) * 1000)
-            events.request_failure.fire(request_type=command, name=key+result, response_time=total_time, exception=e)
+            events.request_failure.fire(request_type=command, name=key+"  -  "+result, response_time=total_time, exception=e)
         else:
             total_time = int((time.time() - start_time) * 1000)
             length = len(str(result))
-            events.request_success.fire(request_type=command, name=key+result, response_time=total_time, response_length=length)
+            events.request_success.fire(request_type=command, name=key+"  -  "+result, response_time=total_time, response_length=length)
 
     def set_redis(self, key, value, command='SET'):
         result = None
@@ -50,11 +50,11 @@ class RedisClient(object):
                                         response_length=length)
         return result
 
-    def hset_redis(self, key, value, command='HSET'):
+    def hset_redis(self, hashkey, key, value, command='HSET'):
         result = None
         start_time = time.time()
         try:
-            result = self.rc.hset("RandomWords",key, value)
+            result = self.rc.hset(hashkey, key, value)
             if not result:
                 result = ''
         except Exception as e:
@@ -67,21 +67,21 @@ class RedisClient(object):
                                         response_length=length)
         return result
 
-    def hget_redis(self, key, command='HGET'):
+    def hget_redis(self, hashkey, key, command='HGET'):
         result = None
         start_time = time.time()
         try:
-            result = self.rc.hget("RandomWords",key)
+            result = self.rc.hget(hashkey, key)
             # print (result)
             if not result:
                 result = ''
         except Exception as e:
             total_time = int((time.time() - start_time) * 1000)
-            events.request_failure.fire(request_type=command, name=key+result, response_time=total_time, exception=e)
+            events.request_failure.fire(request_type=command, name=key+"  -  "+result, response_time=total_time, exception=e)
         else:
             total_time = int((time.time() - start_time) * 1000)
             length = len(str(result))
-            events.request_success.fire(request_type=command, name=key+result, response_time=total_time, response_length=length)
+            events.request_success.fire(request_type=command, name=key+"  -  "+result, response_time=total_time, response_length=length)
 
 
 class RedisUser(User):
@@ -97,7 +97,7 @@ class RedisUser(User):
         self.result_str2 = ''.join(random.choice(string.ascii_letters) for i in range(length2))
 
 
-    @task
+    @task(1)
     def test1 (self):
         for i in range (1,10):
             self.client.set_redis(self.result_str1,self.result_str2)
@@ -105,15 +105,8 @@ class RedisUser(User):
         for i in range(1,1000):
             self.client.get_redis(self.result_str1)
 
-    @task
-    def test2 (self):
-        for i in range (1,10):
-            self.client.hset_redis("RandomWords",self.result_str1,self.result_str2)
-
-        for i in range(1,1000):
-            self.client.get_redis(self.result_str1)
-
-    @task
+    
+    @task(2)
     def test3 (self):
         for i in range (1,1000):
             self.client.set_redis(self.result_str1,self.result_str2)
@@ -121,13 +114,21 @@ class RedisUser(User):
         for i in range(1,10):
             self.client.get_redis(self.result_str1)
 
-    @task
+    @task(3)
     def test4 (self):
         for i in range (1,1000):
             self.client.set_redis(self.result_str1,self.result_str2)
 
         for i in range(1,10):
             self.client.hget_redis("RandomWords",self.result_str1)
+
+    @task(4)
+    def test2 (self):
+        for i in range (1,10):
+            self.client.hset_redis("RandomWords",self.result_str1,self.result_str2)
+
+        for i in range(1,1000):
+            self.client.get_redis(self.result_str1)
 
 
             
