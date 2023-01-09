@@ -2,7 +2,7 @@ import os
 import redis
 import time
 import datetime
-from locust import User, task, events
+from locust import User, task, events,tag
 import random
 import string
 
@@ -88,62 +88,69 @@ class RedisUser(User):
     def __init__(self, *args, **kwargs):
         super(RedisUser, self).__init__(*args, **kwargs)
         self.client = RedisClient()
-        print("hola")
-        
 
 
-
-        # Random word generation
-        length1 = random.randrange(1,20)
-        length2 = random.randrange(1,20)
-        self.result_str1 = ''.join(random.choice(string.ascii_letters) for i in range(length1))
-        self.result_str2 = ''.join(random.choice(string.ascii_letters) for i in range(length2))
-
-
-    @events.test_start.add_listener
-    def on_test_start( environment, **kwargs):
-        initClient= RedisClient()
-        print("A new test is starting")
-        print(environment)
-        initClient.set_redis("hello","h")
-        print(initClient.get_redis("hello"))
-
-    def on_start(self):
-        print("hola")
-        
-
+    @tag('tag1')
     @task
-    def test1 (self):
-        for i in range (1,10):
-            self.client.set_redis(self.result_str1,self.result_str2)
+    def set_task(self):
 
-        for i in range(1,1000):
-            self.client.get_redis(self.result_str1)
+        for i in range(0, 10):
+            # Set calls with small and big data structures
+            self.client.set_redis(str(i),str(i+1))
+            self.client.hset_redis('',str(i),str(i+1))
+
+        for i in range(1000000**10, (1000000**10)+10):
+            # Set calls with small and big data structures
+            self.client.set_redis(str(i),str(i+1))
+            self.client.hset_redis('',str(i),str(i+1))
+           
+            
+    @tag('tag2')
+    @task
+    def task2(self):
+        for i in range(0, 10):
+            # Set calls with small and big data structures
+            self.client.get_redis(str(i))
+            self.client.hget_redis('',str(i))
+
+        for i in range(1000000**10, (1000000**10)+10):
+            # Set calls with small and big data structures
+            self.client.get_redis(str(i),str(i+1))
+            self.client.hget_redis('',str(i))
+
+
+    # @task
+    # def test1 (self):
+    #     for i in range (1,10):
+    #         self.client.set_redis(self.result_str1,self.result_str2)
+
+    #     for i in range(1,1000):
+    #         self.client.get_redis(self.result_str1)
 
     
-    @task
-    def test3 (self):
-        for i in range (1,1000):
-            self.client.set_redis(self.result_str1,self.result_str2)
+    # @task
+    # def test3 (self):
+    #     for i in range (1,1000):
+    #         self.client.set_redis(self.result_str1,self.result_str2)
 
-        for i in range(1,10):
-            self.client.get_redis(self.result_str1)
+    #     for i in range(1,10):
+    #         self.client.get_redis(self.result_str1)
 
-    @task
-    def test4 (self):
-        for i in range (1,1000):
-            self.client.set_redis(self.result_str1,self.result_str2)
+    # @task
+    # def test4 (self):
+    #     for i in range (1,1000):
+    #         self.client.set_redis(self.result_str1,self.result_str2)
 
-        for i in range(1,10):
-            self.client.hget_redis("RandomWords",self.result_str1)
+    #     for i in range(1,10):
+    #         self.client.hget_redis("RandomWords",self.result_str1)
 
-    @task
-    def test2 (self):
-        for i in range (1,10):
-            self.client.hset_redis("RandomWords",self.result_str1,self.result_str2)
+    # @task
+    # def test2 (self):
+    #     for i in range (1,10):
+    #         self.client.hset_redis("RandomWords",self.result_str1,self.result_str2)
 
-        for i in range(1,1000):
-            self.client.get_redis(self.result_str1)
+    #     for i in range(1,1000):
+    #         self.client.get_redis(self.result_str1)
 
 
             
