@@ -27,12 +27,15 @@ python redis-client.py
 ```
 
 ### Running the python client localy using containers
-We will generate the client application iamge using the [official Docker image for python](https://hub.docker.com/_/python).
+We will generate the client application image using the [official Docker image for python](https://hub.docker.com/_/python).
 
 ``` bash 
 sudo docker-compose up --detach
 ```
-
+#### Install dependencies for Python client
+``` bash 
+pip install -r requirements.txt
+```
 #### Manual build and run (without Docker-compose)
 
 ``` bash 
@@ -45,4 +48,6 @@ sudo docker run --network host redis-client
 
 https://github.com/clue/docker-redis-benchmark
 
+
+https://github.com/joeferner/redis-commander
 
