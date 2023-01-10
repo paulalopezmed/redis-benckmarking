@@ -42,7 +42,42 @@ pip install -r requirements.txt
 sudo docker build -t redis-client .
 sudo docker run --network host redis-client
 ```
+### Benchmark executation in Google Cloud Platform
 
+Build SUT and Client in order. Obtain the result with the process is finiched. Execute the finish file when the benchmark is finished
+
+#### Build and run of Redis (in Google Cloud Platform)
+
+``` bash 
+./startRedis.sh
+```
+#### Build and run of Redis (in Google Cloud Platform)
+
+``` bash 
+chmod +x startRedis.sh
+./startRedis.sh
+```
+
+#### Build and run of Client (in Google Cloud Platform)
+
+``` bash 
+chmod +x startClient.sh
+./startClient.sh
+```
+
+#### Delete instance of Redis (in Google Cloud Platform)
+
+``` bash 
+chmod +x finishRedis.sh
+./finishClient.sh
+```
+
+#### Delete instance of Client (in Google Cloud Platform)
+
+``` bash 
+chmod +x finishClient.sh
+./finishClient.sh
+```
 
 ## Documentation used
 
